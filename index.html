@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập đơn giản</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="form-container" id="loginForm">
+            <h2>Đăng nhập</h2>
+            <form id="login">
+                <div class="form-group">
+                    <label for="loginUsername">Tên đăng nhập:</label>
+                    <input type="text" id="loginUsername" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Mật khẩu:</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <button type="submit">Đăng nhập</button>
+                <p class="toggle-form">Chưa có tài khoản? <a href="#" id="showRegister">Đăng ký</a></p>
+            </form>
+        </div>
+
+        <div class="form-container" id="registerForm" style="display: none;">
+            <h2>Đăng ký</h2>
+            <form id="register">
+                <div class="form-group">
+                    <label for="regUsername">Tên đăng nhập:</label>
+                    <input type="text" id="regUsername" required>
+                </div>
+                <div class="form-group">
+                    <label for="regEmail">Email:</label>
+                    <input type="email" id="regEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="regPassword">Mật khẩu:</label>
+                    <input type="password" id="regPassword" required>
+                </div>
+                <div class="form-group">
+                    <label for="regConfirmPassword">Xác nhận mật khẩu:</label>
+                    <input type="password" id="regConfirmPassword" required>
+                </div>
+                <button type="submit">Đăng ký</button>
+                <p class="toggle-form">Đã có tài khoản? <a href="#" id="showLogin">Đăng nhập</a></p>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
