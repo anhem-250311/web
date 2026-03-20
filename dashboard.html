@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="dashboard">
+        <header>
+            <h1>Xin chào, <span id="userDisplay"></span>!</h1>
+            <button id="logoutBtn" class="logout-btn">Đăng xuất</button>
+        </header>
+
+        <main>
+            <div class="user-info">
+                <h2>Thông tin người dùng</h2>
+                <div id="userDetails"></div>
+            </div>
+
+            <div class="data-section">
+                <h2>Dữ liệu của bạn</h2>
+                <form id="dataForm">
+                    <div class="form-group">
+                        <label for="userData">Nhập dữ liệu:</label>
+                        <input type="text" id="userData" placeholder="Nhập thông tin...">
+                    </div>
+                    <button type="submit">Lưu dữ liệu</button>
+                </form>
+
+                <div id="savedData"></div>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
