@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập đơn giản</title>
+    <style>
+        /* CSS ở đây */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+        }
+        .form-container {
+            transition: all 0.3s ease;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #666;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        button:hover {
+            background: #764ba2;
+        }
+        .toggle-form {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+        }
+        .toggle-form a {
+            color: #667eea;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .toggle-form a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-container" id="loginForm">
+            <h2>Đăng nhập</h2>
+            <form id="login">
+                <div class="form-group">
+                    <label for="loginUsername">Tên đăng nhập:</label>
+                    <input type="text" id="loginUsername" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Mật khẩu:</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <button type="submit">Đăng nhập</button>
+                <p class="toggle-form">Chưa có tài khoản? <a href="#" id="showRegister">Đăng ký</a></p>
+            </form>
+        </div>
+
+        <div class="form-container" id="registerForm" style="display: none;">
+            <h2>Đăng ký</h2>
+            <form id="register">
+                <div class="form-group">
+                    <label for="regUsername">Tên đăng nhập:</label>
+                    <input type="text" id="regUsername" required>
+                </div>
+                <div class="form-group">
+                    <label for="regEmail">Email:</label>
+                    <input type="email" id="regEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="regPassword">Mật khẩu:</label>
+                    <input type="password" id="regPassword" required>
+                </div>
+                <div class="form-group">
+                    <label for="regConfirmPassword">Xác nhận mật khẩu:</label>
+                    <input type="password" id="regConfirmPassword" required>
+                </div>
+                <button type="submit">Đăng ký</button>
+                <p class="toggle-form">Đã có tài khoản? <a href="#" id="showLogin">Đăng nhập</a></p>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript ở đây
+        console.log("Script loaded successfully!");
+
+        if (!localStorage.getItem('users')) {
+            localStorage.setItem('users', JSON.stringify([]));
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const showRegister = document.getElementById('showRegister');
+            const showLogin = document.getElementById('showLogin');
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+
+            if (showRegister) {
+                showRegister.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    loginForm.style.display = 'none';
+                    registerForm.style.display = 'block';
+                });
+            }
+
+            if (showLogin) {
+                showLogin.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    registerForm.style.display = 'none';
+                    loginForm.style.display = 'block';
+                });
+            }
+
+            const register = document.getElementById('register');
+            if (register) {
+                register.addEventListener('submit', (e) => {
+                    e.preventDefault();
+
+                    const username = document.getElementById('regUsername').value;
+                    const email = document.getElementById('regEmail').value;
+                    const password = document.getElementById('regPassword').value;
+                    const confirmPassword = document.getElementById('regConfirmPassword').value;
+
+                    if (password !== confirmPassword) {
+                        alert('Mật khẩu xác nhận không khớp!');
+                        return;
+                    }
+
+                    let users = JSON.parse(localStorage.getItem('users'));
+
+                    if (users.some(user => user.username === username)) {
+                        alert('Tên đăng nhập đã tồn tại!');
+                        return;
+                    }
+
+                    users.push({
+                        username: username,
+                        email: email,
+                        password: password,
+                        data: []
+                    });
+
+                    localStorage.setItem('users', JSON.stringify(users));
+
+                    alert('Đăng ký thành công!');
+
+                    registerForm.style.display = 'none';
+                    loginForm.style.display = 'block';
+                    register.reset();
+                });
+            }
+
+            const login = document.getElementById('login');
+            if (login) {
+                login.addEventListener('submit', (e) => {
+                    e.preventDefault();
+
+                    const username = document.getElementById('loginUsername').value;
+                    const password = document.getElementById('loginPassword').value;
+
+                    let users = JSON.parse(localStorage.getItem('users'));
+                    const user = users.find(u => u.username === username && u.password === password);
+
+                    if (user) {
+                        localStorage.setItem('currentUser', JSON.stringify({
+                            username: user.username,
+                            email: user.email
+                        }));
+
+                        alert('Đăng nhập thành công!');
+                        window.location.href = 'dashboard.html';
+                    } else {
+                        alert('Tên đăng nhập hoặc mật khẩu không đúng!');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
