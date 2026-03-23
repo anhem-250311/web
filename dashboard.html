@@ -328,13 +328,15 @@
             projectId: '69c001f10006c293ac70',
             databaseId: '69c008550002e082a6fc',
             usersCollectionId: 'users',
-            dataCollectionId: 'user_data'
+            dataCollectionId: 'user_data',
+            apiKey: 'standard_5366358b32c6823da7e041f4de66827705ba1ddd33ad6fa8f64a5bb865437a0b30fd8391f923ecde1b2d8e9514908df98f03dad89e1a9fa270dc5a9747d3471239239bc516398495f26db273e23692daffae86cd65994eceaf567786637a06122ec0944ee209ef59bf96f0bfe8f0be26cbdc9180d11022802531f2bd77acc435'
         };
 
         const client = new Appwrite.Client();
         client
             .setEndpoint(APPWRITE_CONFIG.endpoint)
-            .setProject(APPWRITE_CONFIG.projectId);
+            .setProject(APPWRITE_CONFIG.projectId)
+            .setKey(APPWRITE_CONFIG.apiKey);
 
         const databases = new Appwrite.Databases(client);
 
