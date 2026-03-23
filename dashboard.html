@@ -271,7 +271,7 @@
     <div id="notification" class="notification" style="display: none;"></div>
 
     <script>
-        // CẤU HÌNH - KHÔNG API KEY
+        // Cấu hình Appwrite
         const client = new Appwrite.Client();
         client
             .setEndpoint('https://cloud.appwrite.io/v1')
@@ -311,7 +311,7 @@
                     [Appwrite.Query.equal('userId', currentUser.id)]);
                 const saved = document.getElementById('savedData');
                 if (res.documents.length === 0) {
-                    saved.innerHTML = '<p class="empty-message">Chưa có dữ liệu.</p>';
+                    saved.innerHTML = '<p class="empty-message">Chưa có dữ liệu nào được lưu.</p>';
                     return;
                 }
                 let html = '<h3>Dữ liệu đã lưu:</h3>';
@@ -326,25 +326,25 @@
                 });
                 saved.innerHTML = html;
             } catch (err) {
-                showNotification('Lỗi tải: ' + err.message, 'error');
+                showNotification('Lỗi tải dữ liệu: ' + err.message, 'error');
             }
         }
 
         document.getElementById('dataForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const data = document.getElementById('userData').value.trim();
-            if (!data) return showNotification('Nhập dữ liệu!', 'error');
+            if (!data) return showNotification('Vui lòng nhập dữ liệu!', 'error');
             const btn = document.getElementById('saveDataBtn');
             setLoading(btn, true, 'Lưu dữ liệu');
             try {
-                await databases.createDocument(DATABASE_ID, DATA_COLLECTION_ID, 'unique(), {
+                await databases.createDocument(DATABASE_ID, DATA_COLLECTION_ID, 'unique()', {
                     userId: currentUser.id,
                     content: data,
                     timestamp: new Date().toISOString()
                 });
                 document.getElementById('userData').value = '';
                 await loadUserData();
-                showNotification('Đã lưu!', 'success');
+                showNotification('Đã lưu dữ liệu thành công!', 'success');
             } catch (err) {
                 showNotification('Lỗi: ' + err.message, 'error');
             } finally {
@@ -353,11 +353,11 @@
         });
 
         window.deleteData = async (id) => {
-            if (confirm('Xoá dữ liệu này?')) {
+            if (confirm('Bạn có chắc muốn xoá dữ liệu này?')) {
                 try {
                     await databases.deleteDocument(DATABASE_ID, DATA_COLLECTION_ID, id);
                     await loadUserData();
-                    showNotification('Đã xoá!', 'success');
+                    showNotification('Đã xoá dữ liệu!', 'success');
                 } catch (err) {
                     showNotification('Lỗi: ' + err.message, 'error');
                 }
@@ -380,7 +380,7 @@
             const pwd = document.getElementById('confirmPassword').value;
             const err = document.getElementById('passwordError');
             if (!pwd) {
-                err.textContent = 'Nhập mật khẩu!';
+                err.textContent = 'Vui lòng nhập mật khẩu!';
                 err.style.display = 'block';
                 return;
             }
@@ -390,7 +390,7 @@
                     Appwrite.Query.equal('password', pwd)
                 ]);
                 if (check.documents.length === 0) {
-                    err.textContent = 'Mật khẩu sai!';
+                    err.textContent = 'Mật khẩu không chính xác!';
                     err.style.display = 'block';
                     return;
                 }
@@ -402,7 +402,7 @@
                 await databases.deleteDocument(DATABASE_ID, USERS_COLLECTION_ID, currentUser.id);
                 localStorage.removeItem('currentUser');
                 modal.classList.remove('show');
-                showNotification('Đã xoá tài khoản!', 'success');
+                showNotification('Tài khoản đã được xoá thành công!', 'success');
                 setTimeout(() => window.location.href = 'index.html', 1500);
             } catch (err) {
                 showNotification('Lỗi: ' + err.message, 'error');
