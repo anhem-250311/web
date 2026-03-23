@@ -40,28 +40,24 @@
             display: flex;
             gap: 10px;
         }
-        .logout-btn {
+        .logout-btn, .delete-account-btn {
             width: auto;
             padding: 8px 16px;
-            background: white;
-            color: #667eea;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             font-size: 14px;
+        }
+        .logout-btn {
+            background: white;
+            color: #667eea;
         }
         .logout-btn:hover {
             background: #f0f0f0;
         }
         .delete-account-btn {
-            width: auto;
-            padding: 8px 16px;
             background: #dc3545;
             color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
         }
         .delete-account-btn:hover {
             background: #c82333;
@@ -106,10 +102,6 @@
             border-radius: 5px;
             font-size: 16px;
         }
-        input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
         button {
             padding: 12px 20px;
             background: #667eea;
@@ -139,9 +131,6 @@
             justify-content: space-between;
             align-items: center;
         }
-        .data-item:hover {
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
         .data-item-content {
             flex: 1;
         }
@@ -162,9 +151,6 @@
             cursor: pointer;
             font-size: 12px;
         }
-        .delete-data-btn:hover {
-            background: #cc0000;
-        }
         .empty-message {
             color: #999;
             font-style: italic;
@@ -178,10 +164,10 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
+            background: rgba(0,0,0,0.5);
             justify-content: center;
             align-items: center;
+            z-index: 1000;
         }
         .modal.show {
             display: flex;
@@ -192,18 +178,10 @@
             border-radius: 10px;
             max-width: 400px;
             width: 90%;
-            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
         }
         .modal-content h3 {
             color: #dc3545;
             margin-bottom: 15px;
-        }
-        .modal-content p {
-            margin-bottom: 10px;
-            color: #666;
-        }
-        .modal-content .form-group {
-            margin: 20px 0;
         }
         .modal-buttons {
             display: flex;
@@ -212,19 +190,6 @@
         }
         .modal-buttons button {
             flex: 1;
-            padding: 10px;
-        }
-        .delete-btn {
-            background: #dc3545;
-        }
-        .delete-btn:hover {
-            background: #c82333;
-        }
-        .cancel-btn {
-            background: #6c757d;
-        }
-        .cancel-btn:hover {
-            background: #5a6268;
         }
         .notification {
             position: fixed;
@@ -235,26 +200,14 @@
             color: white;
             font-weight: bold;
             z-index: 2000;
-            animation: slideIn 0.3s ease;
+            animation: slideIn 0.3s;
         }
-        .notification.success {
-            background: #28a745;
-        }
-        .notification.error {
-            background: #dc3545;
-        }
-        .notification.info {
-            background: #17a2b8;
-        }
+        .notification.success { background: #28a745; }
+        .notification.error { background: #dc3545; }
+        .notification.info { background: #17a2b8; }
         @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
         .loading {
             display: inline-block;
@@ -281,13 +234,11 @@
                 <button id="logoutBtn" class="logout-btn">Đăng xuất</button>
             </div>
         </header>
-
         <main>
             <div class="user-info">
                 <h2>Thông tin người dùng</h2>
                 <div id="userDetails"></div>
             </div>
-
             <div class="data-section">
                 <h2>Dữ liệu của bạn</h2>
                 <form id="dataForm">
@@ -305,65 +256,48 @@
     <div id="deleteModal" class="modal">
         <div class="modal-content">
             <h3>⚠️ Xác nhận xoá tài khoản</h3>
-            <p>Bạn có chắc chắn muốn xoá tài khoản? Hành động này <strong>KHÔNG THỂ</strong> hoàn tác!</p>
-            <p>Tất cả dữ liệu của bạn sẽ bị xoá vĩnh viễn.</p>
+            <p>Hành động này KHÔNG THỂ hoàn tác!</p>
             <div class="form-group">
-                <label for="confirmPassword">Nhập mật khẩu để xác nhận:</label>
-                <input type="password" id="confirmPassword" placeholder="Mật khẩu của bạn">
-                <small id="passwordError" style="color: #dc3545; display: none;">Mật khẩu không chính xác!</small>
+                <label>Nhập mật khẩu:</label>
+                <input type="password" id="confirmPassword">
+                <small id="passwordError" style="color: red; display: none;">Mật khẩu không đúng!</small>
             </div>
             <div class="modal-buttons">
-                <button id="confirmDeleteBtn" class="delete-btn">Xác nhận xoá</button>
+                <button id="confirmDeleteBtn" class="delete-btn">Xác nhận</button>
                 <button id="cancelDeleteBtn" class="cancel-btn">Huỷ</button>
             </div>
         </div>
     </div>
-
     <div id="notification" class="notification" style="display: none;"></div>
 
     <script>
-        // ============== CẤU HÌNH APPWRITE ==============
-        const APPWRITE_CONFIG = {
-            endpoint: 'https://cloud.appwrite.io/v1',
-            projectId: '69c001f10006c293ac70',
-            databaseId: '69c008550002e082a6fc',
-            usersCollectionId: 'users',
-            dataCollectionId: 'user_data',
-            apiKey: 'standard_5366358b32c6823da7e041f4de66827705ba1ddd33ad6fa8f64a5bb865437a0b30fd8391f923ecde1b2d8e9514908df98f03dad89e1a9fa270dc5a9747d3471239239bc516398495f26db273e23692daffae86cd65994eceaf567786637a06122ec0944ee209ef59bf96f0bfe8f0be26cbdc9180d11022802531f2bd77acc435'
-        };
-
+        // CẤU HÌNH - KHÔNG API KEY
         const client = new Appwrite.Client();
         client
-            .setEndpoint(APPWRITE_CONFIG.endpoint)
-            .setProject(APPWRITE_CONFIG.projectId)
-            .setKey(APPWRITE_CONFIG.apiKey);
+            .setEndpoint('https://cloud.appwrite.io/v1')
+            .setProject('69c001f10006c293ac70');
 
         const databases = new Appwrite.Databases(client);
 
-        function showNotification(message, type = 'info') {
-            const notification = document.getElementById('notification');
-            notification.textContent = message;
-            notification.className = `notification ${type}`;
-            notification.style.display = 'block';
-            setTimeout(() => {
-                notification.style.display = 'none';
-            }, 3000);
+        const DATABASE_ID = '69c008550002e082a6fc';
+        const USERS_COLLECTION_ID = 'users';
+        const DATA_COLLECTION_ID = 'user_data';
+
+        function showNotification(msg, type) {
+            const n = document.getElementById('notification');
+            n.textContent = msg;
+            n.className = `notification ${type}`;
+            n.style.display = 'block';
+            setTimeout(() => n.style.display = 'none', 3000);
         }
 
-        function setLoading(button, isLoading, originalText) {
-            if (isLoading) {
-                button.disabled = true;
-                button.innerHTML = '<span class="loading"></span> Đang xử lý...';
-            } else {
-                button.disabled = false;
-                button.innerHTML = originalText;
-            }
+        function setLoading(btn, isLoading, text) {
+            btn.disabled = isLoading;
+            btn.innerHTML = isLoading ? '<span class="loading"></span> Đang xử lý...' : text;
         }
 
         const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-        if (!currentUser) {
-            window.location.href = 'index.html';
-        }
+        if (!currentUser) window.location.href = 'index.html';
 
         document.getElementById('userDisplay').textContent = currentUser.username;
         document.getElementById('userDetails').innerHTML = `
@@ -373,182 +307,107 @@
 
         async function loadUserData() {
             try {
-                const response = await databases.listDocuments(
-                    APPWRITE_CONFIG.databaseId,
-                    APPWRITE_CONFIG.dataCollectionId,
-                    [Appwrite.Query.equal('userId', currentUser.id)]
-                );
-                
-                const savedData = document.getElementById('savedData');
-                const data = response.documents;
-                
-                if (data.length === 0) {
-                    savedData.innerHTML = '<p class="empty-message">Chưa có dữ liệu nào được lưu.</p>';
+                const res = await databases.listDocuments(DATABASE_ID, DATA_COLLECTION_ID, 
+                    [Appwrite.Query.equal('userId', currentUser.id)]);
+                const saved = document.getElementById('savedData');
+                if (res.documents.length === 0) {
+                    saved.innerHTML = '<p class="empty-message">Chưa có dữ liệu.</p>';
                     return;
                 }
-                
                 let html = '<h3>Dữ liệu đã lưu:</h3>';
-                data.forEach(item => {
-                    html += `
-                        <div class="data-item" data-id="${item.$id}">
-                            <div class="data-item-content">
-                                <p><strong>Nội dung:</strong> ${item.content}</p>
-                                <p><small>${new Date(item.timestamp).toLocaleString('vi-VN')}</small></p>
-                            </div>
-                            <button class="delete-data-btn" onclick="deleteData('${item.$id}')">Xoá</button>
+                res.documents.forEach(item => {
+                    html += `<div class="data-item">
+                        <div class="data-item-content">
+                            <p>${item.content}</p>
+                            <small>${new Date(item.timestamp).toLocaleString('vi-VN')}</small>
                         </div>
-                    `;
+                        <button class="delete-data-btn" onclick="deleteData('${item.$id}')">Xoá</button>
+                    </div>`;
                 });
-                savedData.innerHTML = html;
-            } catch (error) {
-                console.error(error);
-                showNotification('Lỗi tải dữ liệu: ' + error.message, 'error');
+                saved.innerHTML = html;
+            } catch (err) {
+                showNotification('Lỗi tải: ' + err.message, 'error');
             }
         }
 
-        const dataForm = document.getElementById('dataForm');
-        const saveDataBtn = document.getElementById('saveDataBtn');
-        
-        dataForm.addEventListener('submit', async (e) => {
+        document.getElementById('dataForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const userData = document.getElementById('userData').value.trim();
-            
-            if (!userData) {
-                showNotification('Vui lòng nhập dữ liệu!', 'error');
-                return;
-            }
-            
-            setLoading(saveDataBtn, true, 'Lưu dữ liệu');
-            
+            const data = document.getElementById('userData').value.trim();
+            if (!data) return showNotification('Nhập dữ liệu!', 'error');
+            const btn = document.getElementById('saveDataBtn');
+            setLoading(btn, true, 'Lưu dữ liệu');
             try {
-                await databases.createDocument(
-                    APPWRITE_CONFIG.databaseId,
-                    APPWRITE_CONFIG.dataCollectionId,
-                    'unique()',
-                    {
-                        userId: currentUser.id,
-                        content: userData,
-                        timestamp: new Date().toISOString()
-                    }
-                );
-                
+                await databases.createDocument(DATABASE_ID, DATA_COLLECTION_ID, 'unique(), {
+                    userId: currentUser.id,
+                    content: data,
+                    timestamp: new Date().toISOString()
+                });
                 document.getElementById('userData').value = '';
                 await loadUserData();
-                showNotification('Đã lưu dữ liệu thành công!', 'success');
-            } catch (error) {
-                console.error(error);
-                showNotification('Lỗi: ' + error.message, 'error');
+                showNotification('Đã lưu!', 'success');
+            } catch (err) {
+                showNotification('Lỗi: ' + err.message, 'error');
             } finally {
-                setLoading(saveDataBtn, false, 'Lưu dữ liệu');
+                setLoading(btn, false, 'Lưu dữ liệu');
             }
         });
 
-        window.deleteData = async function(id) {
-            if (confirm('Bạn có chắc muốn xoá dữ liệu này?')) {
+        window.deleteData = async (id) => {
+            if (confirm('Xoá dữ liệu này?')) {
                 try {
-                    await databases.deleteDocument(
-                        APPWRITE_CONFIG.databaseId,
-                        APPWRITE_CONFIG.dataCollectionId,
-                        id
-                    );
+                    await databases.deleteDocument(DATABASE_ID, DATA_COLLECTION_ID, id);
                     await loadUserData();
-                    showNotification('Đã xoá dữ liệu!', 'success');
-                } catch (error) {
-                    console.error(error);
-                    showNotification('Lỗi: ' + error.message, 'error');
+                    showNotification('Đã xoá!', 'success');
+                } catch (err) {
+                    showNotification('Lỗi: ' + err.message, 'error');
                 }
             }
         };
 
-        document.getElementById('logoutBtn').addEventListener('click', () => {
+        document.getElementById('logoutBtn').onclick = () => {
             localStorage.removeItem('currentUser');
             showNotification('Đã đăng xuất!', 'info');
-            setTimeout(() => {
-                window.location.href = 'index.html';
-            }, 1000);
-        });
+            setTimeout(() => window.location.href = 'index.html', 1000);
+        };
 
-        const deleteAccountBtn = document.getElementById('deleteAccountBtn');
-        const deleteModal = document.getElementById('deleteModal');
-        const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
-        const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
-        const confirmPasswordInput = document.getElementById('confirmPassword');
-        const passwordError = document.getElementById('passwordError');
+        // Xoá tài khoản
+        const modal = document.getElementById('deleteModal');
+        document.getElementById('deleteAccountBtn').onclick = () => modal.classList.add('show');
+        document.getElementById('cancelDeleteBtn').onclick = () => modal.classList.remove('show');
+        window.onclick = (e) => { if (e.target === modal) modal.classList.remove('show'); };
 
-        deleteAccountBtn.addEventListener('click', () => {
-            deleteModal.classList.add('show');
-            confirmPasswordInput.value = '';
-            passwordError.style.display = 'none';
-        });
-
-        cancelDeleteBtn.addEventListener('click', () => {
-            deleteModal.classList.remove('show');
-        });
-
-        window.addEventListener('click', (e) => {
-            if (e.target === deleteModal) {
-                deleteModal.classList.remove('show');
-            }
-        });
-
-        confirmDeleteBtn.addEventListener('click', async () => {
-            const password = confirmPasswordInput.value;
-            
-            if (!password) {
-                passwordError.textContent = 'Vui lòng nhập mật khẩu!';
-                passwordError.style.display = 'block';
+        document.getElementById('confirmDeleteBtn').onclick = async () => {
+            const pwd = document.getElementById('confirmPassword').value;
+            const err = document.getElementById('passwordError');
+            if (!pwd) {
+                err.textContent = 'Nhập mật khẩu!';
+                err.style.display = 'block';
                 return;
             }
-            
             try {
-                const userCheck = await databases.listDocuments(
-                    APPWRITE_CONFIG.databaseId,
-                    APPWRITE_CONFIG.usersCollectionId,
-                    [
-                        Appwrite.Query.equal('username', currentUser.username),
-                        Appwrite.Query.equal('password', password)
-                    ]
-                );
-                
-                if (userCheck.documents.length === 0) {
-                    passwordError.textContent = 'Mật khẩu không chính xác!';
-                    passwordError.style.display = 'block';
+                const check = await databases.listDocuments(DATABASE_ID, USERS_COLLECTION_ID, [
+                    Appwrite.Query.equal('username', currentUser.username),
+                    Appwrite.Query.equal('password', pwd)
+                ]);
+                if (check.documents.length === 0) {
+                    err.textContent = 'Mật khẩu sai!';
+                    err.style.display = 'block';
                     return;
                 }
-                
-                const userData = await databases.listDocuments(
-                    APPWRITE_CONFIG.databaseId,
-                    APPWRITE_CONFIG.dataCollectionId,
-                    [Appwrite.Query.equal('userId', currentUser.id)]
-                );
-                
+                const userData = await databases.listDocuments(DATABASE_ID, DATA_COLLECTION_ID,
+                    [Appwrite.Query.equal('userId', currentUser.id)]);
                 for (const doc of userData.documents) {
-                    await databases.deleteDocument(
-                        APPWRITE_CONFIG.databaseId,
-                        APPWRITE_CONFIG.dataCollectionId,
-                        doc.$id
-                    );
+                    await databases.deleteDocument(DATABASE_ID, DATA_COLLECTION_ID, doc.$id);
                 }
-                
-                await databases.deleteDocument(
-                    APPWRITE_CONFIG.databaseId,
-                    APPWRITE_CONFIG.usersCollectionId,
-                    currentUser.id
-                );
-                
+                await databases.deleteDocument(DATABASE_ID, USERS_COLLECTION_ID, currentUser.id);
                 localStorage.removeItem('currentUser');
-                deleteModal.classList.remove('show');
-                showNotification('Tài khoản đã được xoá thành công!', 'success');
-                
-                setTimeout(() => {
-                    window.location.href = 'index.html';
-                }, 2000);
-                
-            } catch (error) {
-                console.error(error);
-                showNotification('Lỗi: ' + error.message, 'error');
+                modal.classList.remove('show');
+                showNotification('Đã xoá tài khoản!', 'success');
+                setTimeout(() => window.location.href = 'index.html', 1500);
+            } catch (err) {
+                showNotification('Lỗi: ' + err.message, 'error');
             }
-        });
+        };
 
         loadUserData();
     </script>
