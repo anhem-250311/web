@@ -83,9 +83,6 @@
             text-decoration: none;
             cursor: pointer;
         }
-        .toggle-form a:hover {
-            text-decoration: underline;
-        }
         .message {
             margin-top: 15px;
             padding: 10px;
@@ -96,12 +93,10 @@
         .message.success {
             background: #d4edda;
             color: #155724;
-            border: 1px solid #c3e6cb;
         }
         .message.error {
             background: #f8d7da;
             color: #721c24;
-            border: 1px solid #f5c6cb;
         }
         .loading {
             display: inline-block;
@@ -160,22 +155,16 @@
     </div>
 
     <script>
-        // ============== CẤU HÌNH APPWRITE ==============
-        const APPWRITE_CONFIG = {
-            endpoint: 'https://cloud.appwrite.io/v1',
-            projectId: '69c001f10006c293ac70',
-            databaseId: '69c008550002e082a6fc',
-            usersCollectionId: 'users',
-            apiKey: 'standard_5366358b32c6823da7e041f4de66827705ba1ddd33ad6fa8f64a5bb865437a0b30fd8391f923ecde1b2d8e9514908df98f03dad89e1a9fa270dc5a9747d3471239239bc516398495f26db273e23692daffae86cd65994eceaf567786637a06122ec0944ee209ef59bf96f0bfe8f0be26cbdc9180d11022802531f2bd77acc435'
-        };
-
+        // CẤU HÌNH APPWRITE - KHÔNG API KEY
         const client = new Appwrite.Client();
         client
-            .setEndpoint(APPWRITE_CONFIG.endpoint)
-            .setProject(APPWRITE_CONFIG.projectId)
-            .setKey(APPWRITE_CONFIG.apiKey);
+            .setEndpoint('https://cloud.appwrite.io/v1')
+            .setProject('69c001f10006c293ac70');
 
         const databases = new Appwrite.Databases(client);
+
+        const DATABASE_ID = '69c008550002e082a6fc';
+        const USERS_COLLECTION_ID = 'users';
 
         function showMessage(text, type) {
             const msgDiv = document.getElementById('message');
@@ -197,147 +186,131 @@
             }
         }
 
-        const showRegisterLink = document.getElementById('showRegister');
-        const showLoginLink = document.getElementById('showLogin');
-        const loginFormDiv = document.getElementById('loginForm');
-        const registerFormDiv = document.getElementById('registerForm');
+        // Chuyển đổi form
+        document.getElementById('showRegister').addEventListener('click', (e) => {
+            e.preventDefault();
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('registerForm').style.display = 'block';
+            document.getElementById('message').style.display = 'none';
+        });
 
-        if (showRegisterLink) {
-            showRegisterLink.addEventListener('click', (e) => {
-                e.preventDefault();
-                loginFormDiv.style.display = 'none';
-                registerFormDiv.style.display = 'block';
-                document.getElementById('message').style.display = 'none';
-            });
-        }
-
-        if (showLoginLink) {
-            showLoginLink.addEventListener('click', (e) => {
-                e.preventDefault();
-                registerFormDiv.style.display = 'none';
-                loginFormDiv.style.display = 'block';
-                document.getElementById('message').style.display = 'none';
-            });
-        }
+        document.getElementById('showLogin').addEventListener('click', (e) => {
+            e.preventDefault();
+            document.getElementById('registerForm').style.display = 'none';
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('message').style.display = 'none';
+        });
 
         // ĐĂNG KÝ
-        const registerForm = document.getElementById('register');
-        const registerBtn = document.getElementById('registerBtn');
-
-        if (registerForm) {
-            registerForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
+        document.getElementById('register').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('regUsername').value.trim();
+            const password = document.getElementById('regPassword').value;
+            const confirmPassword = document.getElementById('regConfirmPassword').value;
+            
+            if (!username || !password) {
+                showMessage('Vui lòng điền đầy đủ thông tin!', 'error');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                showMessage('Mật khẩu xác nhận không khớp!', 'error');
+                return;
+            }
+            
+            if (password.length < 3) {
+                showMessage('Mật khẩu phải có ít nhất 3 ký tự!', 'error');
+                return;
+            }
+            
+            setLoading(document.getElementById('registerBtn'), true);
+            
+            try {
+                // Kiểm tra username đã tồn tại
+                const existing = await databases.listDocuments(
+                    DATABASE_ID,
+                    USERS_COLLECTION_ID,
+                    [Appwrite.Query.equal('username', username)]
+                );
                 
-                const username = document.getElementById('regUsername').value.trim();
-                const password = document.getElementById('regPassword').value;
-                const confirmPassword = document.getElementById('regConfirmPassword').value;
-                
-                if (!username || !password) {
-                    showMessage('Vui lòng điền đầy đủ thông tin!', 'error');
+                if (existing.documents.length > 0) {
+                    showMessage('Tên đăng nhập đã tồn tại!', 'error');
+                    setLoading(document.getElementById('registerBtn'), false);
                     return;
                 }
                 
-                if (password !== confirmPassword) {
-                    showMessage('Mật khẩu xác nhận không khớp!', 'error');
-                    return;
-                }
-                
-                if (password.length < 4) {
-                    showMessage('Mật khẩu phải có ít nhất 4 ký tự!', 'error');
-                    return;
-                }
-                
-                setLoading(registerBtn, true);
-                
-                try {
-                    const existingUsers = await databases.listDocuments(
-                        APPWRITE_CONFIG.databaseId,
-                        APPWRITE_CONFIG.usersCollectionId,
-                        [Appwrite.Query.equal('username', username)]
-                    );
-                    
-                    if (existingUsers.documents.length > 0) {
-                        showMessage('Tên đăng nhập đã tồn tại!', 'error');
-                        setLoading(registerBtn, false);
-                        return;
+                // Tạo user mới
+                await databases.createDocument(
+                    DATABASE_ID,
+                    USERS_COLLECTION_ID,
+                    'unique()',
+                    {
+                        username: username,
+                        password: password
                     }
-                    
-                    await databases.createDocument(
-                        APPWRITE_CONFIG.databaseId,
-                        APPWRITE_CONFIG.usersCollectionId,
-                        'unique()',
-                        {
-                            username: username,
-                            password: password
-                        }
-                    );
-                    
-                    showMessage('Đăng ký thành công! Vui lòng đăng nhập.', 'success');
-                    
-                    registerFormDiv.style.display = 'none';
-                    loginFormDiv.style.display = 'block';
-                    registerForm.reset();
-                    
-                } catch (error) {
-                    console.error(error);
-                    showMessage('Lỗi: ' + error.message, 'error');
-                } finally {
-                    setLoading(registerBtn, false);
-                }
-            });
-        }
+                );
+                
+                showMessage('Đăng ký thành công! Vui lòng đăng nhập.', 'success');
+                
+                document.getElementById('registerForm').style.display = 'none';
+                document.getElementById('loginForm').style.display = 'block';
+                document.getElementById('register').reset();
+                
+            } catch (error) {
+                console.error(error);
+                showMessage('Lỗi: ' + error.message, 'error');
+            } finally {
+                setLoading(document.getElementById('registerBtn'), false);
+            }
+        });
 
         // ĐĂNG NHẬP
-        const loginForm = document.getElementById('login');
-        const loginBtn = document.getElementById('loginBtn');
-
-        if (loginForm) {
-            loginForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
+        document.getElementById('login').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            
+            if (!username || !password) {
+                showMessage('Vui lòng điền đầy đủ thông tin!', 'error');
+                return;
+            }
+            
+            setLoading(document.getElementById('loginBtn'), true);
+            
+            try {
+                const response = await databases.listDocuments(
+                    DATABASE_ID,
+                    USERS_COLLECTION_ID,
+                    [
+                        Appwrite.Query.equal('username', username),
+                        Appwrite.Query.equal('password', password)
+                    ]
+                );
                 
-                const username = document.getElementById('loginUsername').value.trim();
-                const password = document.getElementById('loginPassword').value;
-                
-                if (!username || !password) {
-                    showMessage('Vui lòng điền đầy đủ thông tin!', 'error');
-                    return;
+                if (response.documents.length > 0) {
+                    const user = response.documents[0];
+                    localStorage.setItem('currentUser', JSON.stringify({
+                        id: user.$id,
+                        username: user.username
+                    }));
+                    
+                    showMessage('Đăng nhập thành công!', 'success');
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 1000);
+                } else {
+                    showMessage('Sai tên đăng nhập hoặc mật khẩu!', 'error');
                 }
                 
-                setLoading(loginBtn, true);
-                
-                try {
-                    const response = await databases.listDocuments(
-                        APPWRITE_CONFIG.databaseId,
-                        APPWRITE_CONFIG.usersCollectionId,
-                        [
-                            Appwrite.Query.equal('username', username),
-                            Appwrite.Query.equal('password', password)
-                        ]
-                    );
-                    
-                    if (response.documents.length > 0) {
-                        const user = response.documents[0];
-                        localStorage.setItem('currentUser', JSON.stringify({
-                            id: user.$id,
-                            username: user.username
-                        }));
-                        
-                        showMessage('Đăng nhập thành công!', 'success');
-                        setTimeout(() => {
-                            window.location.href = 'dashboard.html';
-                        }, 1000);
-                    } else {
-                        showMessage('Tên đăng nhập hoặc mật khẩu không đúng!', 'error');
-                    }
-                    
-                } catch (error) {
-                    console.error(error);
-                    showMessage('Lỗi kết nối: ' + error.message, 'error');
-                } finally {
-                    setLoading(loginBtn, false);
-                }
-            });
-        }
+            } catch (error) {
+                console.error(error);
+                showMessage('Lỗi: ' + error.message, 'error');
+            } finally {
+                setLoading(document.getElementById('loginBtn'), false);
+            }
+        });
     </script>
 </body>
 </html>
