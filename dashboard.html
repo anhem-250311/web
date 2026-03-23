@@ -201,7 +201,6 @@
             padding: 20px;
         }
 
-        /* Modal styles */
         .modal {
             display: none;
             position: fixed;
@@ -303,7 +302,6 @@
             background: #5a6268;
         }
 
-        /* Notification styles */
         .notification {
             position: fixed;
             top: 20px;
@@ -371,7 +369,6 @@
         </main>
     </div>
 
-    <!-- Modal xác nhận xoá tài khoản -->
     <div id="deleteModal" class="modal">
         <div class="modal-content">
             <h3>⚠️ Xác nhận xoá tài khoản</h3>
@@ -391,52 +388,42 @@
         </div>
     </div>
 
-    <!-- Thông báo -->
     <div id="notification" class="notification" style="display: none;"></div>
 
     <script>
-        // Hàm hiển thị thông báo
         function showNotification(message, type = 'info') {
             const notification = document.getElementById('notification');
             notification.textContent = message;
             notification.className = `notification ${type}`;
             notification.style.display = 'block';
-
             setTimeout(() => {
                 notification.style.display = 'none';
             }, 3000);
         }
 
-        // Kiểm tra đăng nhập
         const currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
         if (!currentUser) {
             window.location.href = 'index.html';
         }
 
-        // Hiển thị thông tin user
         document.getElementById('userDisplay').textContent = currentUser.username;
 
         const userDetails = document.getElementById('userDetails');
         userDetails.innerHTML = `
             <p><strong>Tên đăng nhập:</strong> ${currentUser.username}</p>
-            <p><strong>Email:</strong> ${currentUser.email}</p>
             <p><strong>Ngày tham gia:</strong> ${new Date().toLocaleDateString('vi-VN')}</p>
         `;
 
-        // Lấy dữ liệu user
         let users = JSON.parse(localStorage.getItem('users')) || [];
         let userIndex = users.findIndex(u => u.username === currentUser.username);
 
-        // Hàm hiển thị dữ liệu
         function displayUserData(data) {
             const savedData = document.getElementById('savedData');
-
             if (!data || data.length === 0) {
                 savedData.innerHTML = '<p class="empty-message">Chưa có dữ liệu nào được lưu.</p>';
                 return;
             }
-
             let html = '<h3>Dữ liệu đã lưu:</h3>';
             data.forEach(item => {
                 html += `
@@ -449,46 +436,35 @@
                     </div>
                 `;
             });
-
             savedData.innerHTML = html;
         }
 
-        // Hiển thị dữ liệu đã lưu
         if (userIndex !== -1) {
             displayUserData(users[userIndex].data || []);
         }
 
-        // Xử lý lưu dữ liệu
         const dataForm = document.getElementById('dataForm');
         dataForm.addEventListener('submit', (e) => {
             e.preventDefault();
-
             const userData = document.getElementById('userData').value;
-
             if (userData.trim()) {
                 users = JSON.parse(localStorage.getItem('users')) || [];
                 userIndex = users.findIndex(u => u.username === currentUser.username);
-
                 if (!users[userIndex].data) {
                     users[userIndex].data = [];
                 }
-
                 users[userIndex].data.push({
                     id: Date.now(),
                     content: userData,
                     timestamp: new Date().toLocaleString('vi-VN')
                 });
-
                 localStorage.setItem('users', JSON.stringify(users));
-
                 displayUserData(users[userIndex].data);
                 document.getElementById('userData').value = '';
-
                 showNotification('Đã lưu dữ liệu thành công!', 'success');
             }
         });
 
-        // Xử lý đăng xuất
         document.getElementById('logoutBtn').addEventListener('click', () => {
             localStorage.removeItem('currentUser');
             showNotification('Đã đăng xuất!', 'info');
@@ -497,7 +473,6 @@
             }, 1000);
         });
 
-        // XỬ LÝ XOÁ TÀI KHOẢN
         const deleteAccountBtn = document.getElementById('deleteAccountBtn');
         const deleteModal = document.getElementById('deleteModal');
         const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
@@ -505,14 +480,12 @@
         const confirmPasswordInput = document.getElementById('confirmPassword');
         const passwordError = document.getElementById('passwordError');
 
-        // Mở modal
         deleteAccountBtn.addEventListener('click', () => {
             deleteModal.classList.add('show');
             confirmPasswordInput.value = '';
             passwordError.style.display = 'none';
         });
 
-        // Đóng modal
         cancelDeleteBtn.addEventListener('click', () => {
             deleteModal.classList.remove('show');
         });
@@ -523,51 +496,37 @@
             }
         });
 
-        // Xác nhận xoá
         confirmDeleteBtn.addEventListener('click', () => {
             const password = confirmPasswordInput.value;
-
             if (!password) {
                 passwordError.textContent = 'Vui lòng nhập mật khẩu!';
                 passwordError.style.display = 'block';
                 return;
             }
-
             users = JSON.parse(localStorage.getItem('users')) || [];
             const user = users.find(u => u.username === currentUser.username);
-
             if (user.password !== password) {
                 passwordError.textContent = 'Mật khẩu không chính xác!';
                 passwordError.style.display = 'block';
                 return;
             }
-
-            // Xoá tài khoản
             users = users.filter(u => u.username !== currentUser.username);
             localStorage.setItem('users', JSON.stringify(users));
             localStorage.removeItem('currentUser');
-
             deleteModal.classList.remove('show');
-
             showNotification('Tài khoản đã được xoá thành công!', 'success');
-
             setTimeout(() => {
                 window.location.href = 'index.html';
             }, 2000);
         });
 
-        // Hàm xoá dữ liệu
         window.deleteData = function(id) {
             if (confirm('Bạn có chắc muốn xoá dữ liệu này?')) {
                 users = JSON.parse(localStorage.getItem('users')) || [];
                 userIndex = users.findIndex(u => u.username === currentUser.username);
-
                 users[userIndex].data = users[userIndex].data.filter(item => item.id !== id);
-
                 localStorage.setItem('users', JSON.stringify(users));
-
                 displayUserData(users[userIndex].data);
-
                 showNotification('Đã xoá dữ liệu!', 'success');
             }
         };
