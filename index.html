@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- 1. TIÊU ĐỀ WEB ĐÃ ĐỔI -->
+    <title>Server of anhem250311.</title>
+
+    <!-- 2. LOGO (ICON) WEB ĐÃ ĐỔI -->
+    <link rel="icon" type="image/png" href="https://files.catbox.moe/gssm4k.png">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #000;
+            overflow: hidden;
+            font-family: 'Consolas', 'Courier New', monospace;
+        }
+
+        #bg-video-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        #bg-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 0;
+        }
+
+        .content {
+            position: relative;
+            z-index: 1;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .glass-card {
+            background: rgba(0, 0, 0, 0.75);
+            padding: 3rem;
+            border-radius: 15px;
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(162, 155, 254, 0.3);
+            text-align: center;
+            width: 100%;
+            max-width: 1100px;
+            min-height: 520px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        #main-display {
+            font-size: 1.25rem;
+            line-height: 1.8;
+            color: #ececec;
+            width: 100%;
+            text-align: center;
+            pointer-events: auto;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            height: 1.2em;
+            background-color: #a29bfe;
+            margin-left: 5px;
+            vertical-align: middle;
+            animation: blink 0.7s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .big-text {
+            font-size: 4.5rem !important;
+            font-weight: 800;
+            letter-spacing: 12px;
+            background: linear-gradient(to right, #ffffff, #a29bfe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+        }
+
+        .highlight-link {
+            color: #a29bfe;
+            font-weight: 600;
+            text-decoration: none;
+            border-bottom: 1px solid #a29bfe;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 10;
+        }
+
+        .highlight-link:hover {
+            color: #fff;
+            background: rgba(162, 155, 254, 0.2);
+            text-shadow: 0 0 8px #a29bfe;
+            border-bottom: 1px solid #fff;
+        }
+
+        .server-ip {
+            display: inline-block;
+            margin-top: 20px;
+            font-size: 1.8rem;
+            color: #fff;
+            background: rgba(162, 155, 254, 0.1);
+            padding: 10px 25px;
+            border-radius: 10px;
+            border: 2px dashed #a29bfe;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: copy;
+        }
+
+        .server-ip:hover {
+            transform: scale(1.1);
+            background: rgba(162, 155, 254, 0.4);
+            border: 2px solid #fff;
+            box-shadow: 0 0 20px rgba(162, 155, 254, 0.6);
+        }
+
+        .notice-title {
+            color: #ffb8b8;
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        #copy-toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #a29bfe;
+            color: white;
+            padding: 12px 35px;
+            border-radius: 50px;
+            opacity: 0;
+            transition: 0.5s;
+            z-index: 999;
+            font-weight: bold;
+        }
+
+        .subtitle {
+            margin-top: 40px;
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 0.75rem;
+            letter-spacing: 6px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="copy-toast">Copied to Clipboard!</div>
+    <div id="bg-video-container">
+        <video autoplay muted loop playsinline id="bg-video">
+            <source src="https://files.catbox.moe/vphicj.mp4" type="video/mp4">
+        </video>
+    </div>
+    <div class="overlay"></div>
+
+    <div class="content">
+        <div class="glass-card" onclick="handleNextStep()">
+            <div id="main-display">
+                <span id="typed-text"></span><span class="cursor"></span>
+            </div>
+            <div class="subtitle">CLICK TO CONTINUE</div>
+        </div>
+    </div>
+
+    <script>
+        const contentData = [
+            { text: "WELCOME", isBig: true },
+            { text: "Server chạy ở bản 1.21.11 và server có vài Mod như Infinite Night Vision, SkinsRestorer, Veinminer, Fabric Essentials, FallingTree, FSit, Universal Graves và 1 vài Mod hỗ trợ chạy Mod khác.", isBig: false },
+            { text: "The server is running on version 1.21.11 and has several mods such as Infinite Night Vision, SkinsRestorer, Veinminer, Fabric Essentials, FallingTree, FSit, Universal Graves, and a few mods that support running other mods.", isBig: false },
+            { text: 'Máy chủ có hai bản mod đặc biệt là <a href="https://modrinth.com/mod/carry-on" target="_blank" class="highlight-link" onclick="event.stopPropagation()">Carry On</a> và <a href="https://modrinth.com/mod/26.1-backport" target="_blank" class="highlight-link" onclick="event.stopPropagation()">26.1 Backport</a>. Hai bản mod này cần được cài đặt trên cả máy khách và máy chủ. Chúng tôi khuyến khích mọi người cài đặt hai bản mod này trên máy khách của mình để trải nghiệm đầy đủ các tính năng của máy chủ.', isBig: false },
+            { text: 'The server has two special mods: <a href="https://modrinth.com/mod/carry-on" target="_blank" class="highlight-link" onclick="event.stopPropagation()">Carry On</a> and <a href="https://modrinth.com/mod/26.1-backport" target="_blank" class="highlight-link" onclick="event.stopPropagation()">26.1 Backport</a>. These two mods need to be installed on both the client and the server. We encourage everyone to install these two mods on their client machine to experience the full range of server features.', isBig: false },
+            { text: '<div class="notice-title">Thông báo máy chủ</div><p>Chúng tôi chỉ là server nhỏ với 4gb ram và 10gb rom nên tôi chỉ để tối đa 10 người chơi cùng lúc trong server chánh gây lag. Server có thể tự bật khi có người tham gia (nhưng đôi khi tính năng này không hoạt động mong bạn thông cảm)</p>', isBig: false },
+            { text: '<div class="notice-title">Server Notice</div><p>Our server has limited capacity with only 4GB RAM and 10GB ROM, so I\'ve limited the maximum number of players simultaneously to 10 to avoid lag. The server can automatically start when someone joins (but sometimes this feature doesn\'t work, we appreciate your understanding).</p>', isBig: false },
+            { text: '<span style="font-size: 3rem; font-weight: 800; display: block; margin-bottom: 10px;">THANK YOU</span><span class="server-ip" onclick="copyIP(event)">international.mcsh.io</span>', isBig: false }
+        ];
+
+        let currentStep = 0;
+        let isTyping = false;
+        const textElement = document.getElementById('typed-text');
+        const displayContainer = document.getElementById('main-display');
+
+        function typeWriter(html, speed = 20) {
+            isTyping = true;
+            textElement.innerHTML = "";
+            let i = 0;
+            let currentHTML = "";
+
+            function typing() {
+                if (i < html.length) {
+                    if (html[i] === "<") {
+                        let tagEnd = html.indexOf(">", i);
+                        let tag = html.substring(i, tagEnd + 1);
+                        currentHTML += tag;
+                        i = tagEnd + 1;
+                    } else {
+                        currentHTML += html[i];
+                        i++;
+                    }
+                    textElement.innerHTML = currentHTML;
+                    setTimeout(typing, speed);
+                } else {
+                    isTyping = false;
+                }
+            }
+            typing();
+        }
+
+        function handleNextStep() {
+            if (isTyping) return;
+            const item = contentData[currentStep];
+            displayContainer.className = "";
+            if (item.isBig) displayContainer.classList.add('big-text');
+            typeWriter(item.text);
+            currentStep = (currentStep + 1) % contentData.length;
+        }
+
+        function copyIP(event) {
+            event.stopPropagation();
+            const ip = "international.mcsh.io";
+            navigator.clipboard.writeText(ip).then(() => {
+                const toast = document.getElementById('copy-toast');
+                toast.style.opacity = "1";
+                setTimeout(() => { toast.style.opacity = "0"; }, 2000);
+            });
+        }
+
+        window.onload = handleNextStep;
+    </script>
+</body>
+</html>
