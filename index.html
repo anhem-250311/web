@@ -55,14 +55,16 @@
 
         .glass-card {
             background: rgba(0, 0, 0, 0.75);
-            padding: 3rem;
+            /* THAY ĐỔI TẠI ĐÂY: Giảm padding từ 3rem xuống 1.5rem để thu nhỏ viền trên dưới */
+            padding: 1.5rem 2rem; 
             border-radius: 15px;
             backdrop-filter: blur(12px);
             border: 1px solid rgba(162, 155, 254, 0.3);
             text-align: center;
             width: 100%;
             max-width: 1100px;
-            min-height: 520px;
+            /* Giảm min-height để khung không bị quá cao so với nội dung ngắn */
+            min-height: 400px; 
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -124,7 +126,7 @@
 
         .server-ip {
             display: inline-block;
-            margin-top: 20px;
+            margin-top: 15px;
             font-size: 1.8rem;
             color: #fff;
             background: rgba(162, 155, 254, 0.1);
@@ -146,7 +148,7 @@
             color: #ffb8b8;
             font-size: 1.8rem;
             font-weight: bold;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             text-transform: uppercase;
         }
 
@@ -166,7 +168,7 @@
         }
 
         .subtitle {
-            margin-top: 40px;
+            margin-top: 25px;
             color: rgba(255, 255, 255, 0.3);
             font-size: 0.75rem;
             letter-spacing: 6px;
@@ -206,8 +208,8 @@
 
         let currentStep = 0;
         let isTyping = false;
-        let typingTimeout; // Dùng để hủy setTimeout khi skip
-        let currentFullHTML = ""; // Lưu trữ nội dung đầy đủ của bước hiện tại
+        let typingTimeout;
+        let currentFullHTML = "";
         
         const textElement = document.getElementById('typed-text');
         const displayContainer = document.getElementById('main-display');
@@ -242,15 +244,13 @@
         }
 
         function handleNextStep() {
-            // Nếu đang gõ, bấm vào sẽ hiện hết chữ ngay lập tức (Skip)
             if (isTyping) {
-                clearTimeout(typingTimeout); // Dừng hiệu ứng gõ
+                clearTimeout(typingTimeout);
                 isTyping = false;
-                textElement.innerHTML = currentFullHTML + cursorHTML; // Hiện toàn bộ nội dung
+                textElement.innerHTML = currentFullHTML + cursorHTML;
                 return;
             }
 
-            // Nếu đã gõ xong, chuyển sang bước tiếp theo
             const item = contentData[currentStep];
             displayContainer.className = ""; 
             if (item.isBig) displayContainer.classList.add('big-text');
