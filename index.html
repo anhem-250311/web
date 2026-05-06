@@ -55,16 +55,16 @@
 
         .glass-card {
             background: rgba(0, 0, 0, 0.75);
-            /* THAY ĐỔI TẠI ĐÂY: Giảm padding từ 3rem xuống 1.5rem để thu nhỏ viền trên dưới */
-            padding: 1.5rem 2rem; 
+            /* THAY ĐỔI TẠI ĐÂY: Padding gọn hơn (trên-dưới 1.2rem, trái-phải 1.5rem) */
+            padding: 1.2rem 1.5rem; 
             border-radius: 15px;
             backdrop-filter: blur(12px);
             border: 1px solid rgba(162, 155, 254, 0.3);
             text-align: center;
-            width: 100%;
-            max-width: 1100px;
-            /* Giảm min-height để khung không bị quá cao so với nội dung ngắn */
-            min-height: 400px; 
+            width: 95%; /* Co giãn theo màn hình nhưng không quá 95% */
+            /* THAY ĐỔI TẠI ĐÂY: Giảm chiều rộng tối đa xuống 800px để bớt thừa hai bên */
+            max-width: 800px; 
+            min-height: 380px; 
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -75,7 +75,7 @@
 
         #main-display {
             font-size: 1.25rem;
-            line-height: 1.8;
+            line-height: 1.6; /* Giảm nhẹ line-height để tiết kiệm không gian */
             color: #ececec;
             width: 100%;
             text-align: center;
@@ -98,9 +98,9 @@
         }
 
         .big-text {
-            font-size: 4.5rem !important;
+            font-size: 3.5rem !important; /* Giảm cỡ chữ to một chút để vừa khung nhỏ */
             font-weight: 800;
-            letter-spacing: 12px;
+            letter-spacing: 8px;
             background: linear-gradient(to right, #ffffff, #a29bfe);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -127,10 +127,10 @@
         .server-ip {
             display: inline-block;
             margin-top: 15px;
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             color: #fff;
             background: rgba(162, 155, 254, 0.1);
-            padding: 10px 25px;
+            padding: 8px 20px;
             border-radius: 10px;
             border: 2px dashed #a29bfe;
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -138,7 +138,7 @@
         }
 
         .server-ip:hover {
-            transform: scale(1.1);
+            transform: scale(1.05);
             background: rgba(162, 155, 254, 0.4);
             border: 2px solid #fff;
             box-shadow: 0 0 20px rgba(162, 155, 254, 0.6);
@@ -146,9 +146,9 @@
 
         .notice-title {
             color: #ffb8b8;
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             font-weight: bold;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             text-transform: uppercase;
         }
 
@@ -159,7 +159,7 @@
             transform: translateX(-50%);
             background: #a29bfe;
             color: white;
-            padding: 12px 35px;
+            padding: 10px 30px;
             border-radius: 50px;
             opacity: 0;
             transition: 0.5s;
@@ -168,10 +168,10 @@
         }
 
         .subtitle {
-            margin-top: 25px;
+            margin-top: 20px;
             color: rgba(255, 255, 255, 0.3);
-            font-size: 0.75rem;
-            letter-spacing: 6px;
+            font-size: 0.7rem;
+            letter-spacing: 4px;
         }
     </style>
 </head>
@@ -203,7 +203,7 @@
             { text: 'The server has two special mods: <a href="https://modrinth.com/mod/carry-on" target="_blank" class="highlight-link" onclick="event.stopPropagation()">Carry On</a> and <a href="https://modrinth.com/mod/26.1-backport" target="_blank" class="highlight-link" onclick="event.stopPropagation()">26.1 Backport</a>. These two mods need to be installed on both the client and the server. We encourage everyone to install these two mods on their client machine to experience the full range of server features.', isBig: false },
             { text: '<div class="notice-title">Thông báo máy chủ</div><p>Chúng tôi chỉ là server nhỏ với 4gb ram và 10gb rom nên tôi chỉ để tối đa 10 người chơi cùng lúc trong server chánh gây lag. Server có thể tự bật khi có người tham gia (nhưng đôi khi tính năng này không hoạt động mong bạn thông cảm)</p>', isBig: false },
             { text: '<div class="notice-title">Server Notice</div><p>Our server has limited capacity with only 4GB RAM and 10GB ROM, so I\'ve limited the maximum number of players simultaneously to 10 to avoid lag. The server can automatically start when someone joins (but sometimes this feature doesn\'t work, we appreciate your understanding).</p>', isBig: false },
-            { text: '<span style="font-size: 3rem; font-weight: 800; display: block; margin-bottom: 10px;">THANK YOU</span><span class="server-ip" onclick="copyIP(event)">international.mcsh.io</span>', isBig: false }
+            { text: '<span style="font-size: 2.5rem; font-weight: 800; display: block; margin-bottom: 10px;">THANK YOU</span><span class="server-ip" onclick="copyIP(event)">international.mcsh.io</span>', isBig: false }
         ];
 
         let currentStep = 0;
