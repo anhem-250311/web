@@ -68,6 +68,7 @@
             justify-content: center;
             align-items: center; 
             cursor: pointer;
+            user-select: none;
         }
 
         #main-display {
@@ -79,7 +80,6 @@
             pointer-events: auto; 
         }
 
-        /* Hiệu ứng con trỏ nhấp nháy */
         .cursor {
             display: inline-block;
             width: 10px;
@@ -186,10 +186,9 @@
     <div class="content">
         <div class="glass-card" onclick="handleNextStep()">
             <div id="main-display">
-                <!-- Con trỏ giờ sẽ được thêm tự động vào cuối text bởi JS -->
                 <span id="typed-text"></span>
             </div>
-            <div class="subtitle">CLICK TO CONTINUE</div>
+            <div class="subtitle">CLICK TO CONTINUE / SKIP</div>
         </div>
     </div>
 
@@ -207,14 +206,16 @@
 
         let currentStep = 0;
         let isTyping = false;
+        let typingTimeout; // Dùng để hủy setTimeout khi skip
+        let currentFullHTML = ""; // Lưu trữ nội dung đầy đủ của bước hiện tại
+        
         const textElement = document.getElementById('typed-text');
         const displayContainer = document.getElementById('main-display');
-        
-        // HTML của con trỏ
         const cursorHTML = '<span class="cursor"></span>';
 
         function typeWriter(html, speed = 20) {
             isTyping = true;
+            currentFullHTML = html;
             textElement.innerHTML = "";
             let i = 0;
             let currentHTML = "";
@@ -230,12 +231,10 @@
                         currentHTML += html[i];
                         i++;
                     }
-                    // Luôn cộng thêm con trỏ vào cuối nội dung đang gõ
                     textElement.innerHTML = currentHTML + cursorHTML;
-                    setTimeout(typing, speed);
+                    typingTimeout = setTimeout(typing, speed);
                 } else {
                     isTyping = false;
-                    // Sau khi gõ xong vẫn giữ con trỏ nhấp nháy ở cuối
                     textElement.innerHTML = currentHTML + cursorHTML;
                 }
             }
@@ -243,10 +242,19 @@
         }
 
         function handleNextStep() {
-            if (isTyping) return;
+            // Nếu đang gõ, bấm vào sẽ hiện hết chữ ngay lập tức (Skip)
+            if (isTyping) {
+                clearTimeout(typingTimeout); // Dừng hiệu ứng gõ
+                isTyping = false;
+                textElement.innerHTML = currentFullHTML + cursorHTML; // Hiện toàn bộ nội dung
+                return;
+            }
+
+            // Nếu đã gõ xong, chuyển sang bước tiếp theo
             const item = contentData[currentStep];
             displayContainer.className = ""; 
             if (item.isBig) displayContainer.classList.add('big-text');
+            
             typeWriter(item.text);
             currentStep = (currentStep + 1) % contentData.length;
         }
