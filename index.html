@@ -55,14 +55,12 @@
 
         .glass-card {
             background: rgba(0, 0, 0, 0.75);
-            /* THAY ĐỔI TẠI ĐÂY: Padding gọn hơn (trên-dưới 1.2rem, trái-phải 1.5rem) */
             padding: 1.2rem 1.5rem; 
             border-radius: 15px;
             backdrop-filter: blur(12px);
             border: 1px solid rgba(162, 155, 254, 0.3);
             text-align: center;
-            width: 95%; /* Co giãn theo màn hình nhưng không quá 95% */
-            /* THAY ĐỔI TẠI ĐÂY: Giảm chiều rộng tối đa xuống 800px để bớt thừa hai bên */
+            width: 95%;
             max-width: 800px; 
             min-height: 380px; 
             display: flex;
@@ -75,7 +73,7 @@
 
         #main-display {
             font-size: 1.25rem;
-            line-height: 1.6; /* Giảm nhẹ line-height để tiết kiệm không gian */
+            line-height: 1.6;
             color: #ececec;
             width: 100%;
             text-align: center;
@@ -98,7 +96,7 @@
         }
 
         .big-text {
-            font-size: 3.5rem !important; /* Giảm cỡ chữ to một chút để vừa khung nhỏ */
+            font-size: 3.5rem !important;
             font-weight: 800;
             letter-spacing: 8px;
             background: linear-gradient(to right, #ffffff, #a29bfe);
@@ -199,8 +197,9 @@
             { text: "WELCOME", isBig: true },
             { text: "Server chạy ở bản 1.21.11 và server có vài Mod như Infinite Night Vision, SkinsRestorer, Veinminer, Fabric Essentials, FastRTP, FallingTree, FSit, Universal Graves và 1 vài Mod hỗ trợ chạy Mod khác.", isBig: false },
             { text: "The server is running on version 1.21.11 and has several mods such as Infinite Night Vision, SkinsRestorer, Veinminer, Fabric Essentials, FastRTP, FallingTree, FSit, Universal Graves, and a few mods that support running other mods.", isBig: false },
-            { text: 'Máy chủ có hai bản mod đặc biệt là <a href="https://modrinth.com/mod/carry-on" target="_blank" class="highlight-link" onclick="event.stopPropagation()">Carry On</a> và <a href="https://modrinth.com/mod/26.1-backport" target="_blank" class="highlight-link" onclick="event.stopPropagation()">26.1 Backport</a>. Hai bản mod này cần được cài đặt trên cả máy khách và máy chủ. Chúng tôi khuyến khích mọi người cài đặt hai bản mod này trên máy khách của mình để trải nghiệm đầy đủ các tính năng của máy chủ.', isBig: false },
-            { text: 'The server has two special mods: <a href="https://modrinth.com/mod/carry-on" target="_blank" class="highlight-link" onclick="event.stopPropagation()">Carry On</a> and <a href="https://modrinth.com/mod/26.1-backport" target="_blank" class="highlight-link" onclick="event.stopPropagation()">26.1 Backport</a>. These two mods need to be installed on both the client and the server. We encourage everyone to install these two mods on their client machine to experience the full range of server features.', isBig: false },
+            // Đã loại bỏ 26.1 Backport bên dưới
+            { text: 'Máy chủ có bản mod đặc biệt là <a href="https://modrinth.com/mod/carry-on" target="_blank" class="highlight-link" onclick="event.stopPropagation()">Carry On</a>. Bản mod này cần được cài đặt trên cả máy khách và máy chủ. Chúng tôi khuyến khích mọi người cài đặt bản mod này trên máy khách của mình để trải nghiệm đầy đủ các tính năng của máy chủ.', isBig: false },
+            { text: 'The server has a special mod: <a href="https://modrinth.com/mod/carry-on" target="_blank" class="highlight-link" onclick="event.stopPropagation()">Carry On</a>. This mod needs to be installed on both the client and the server. We encourage everyone to install this mod on their client machine to experience the full range of server features.', isBig: false },
             { text: '<div class="notice-title">Thông báo máy chủ</div><p>Chúng tôi chỉ là server nhỏ với 4gb ram và 10gb rom nên tôi chỉ để tối đa 10 người chơi cùng lúc trong server chánh gây lag. Server có thể tự bật khi có người tham gia (nhưng đôi khi tính năng này không hoạt động mong bạn thông cảm)</p>', isBig: false },
             { text: '<div class="notice-title">Server Notice</div><p>Our server has limited capacity with only 4GB RAM and 10GB ROM, so I\'ve limited the maximum number of players simultaneously to 10 to avoid lag. The server can automatically start when someone joins (but sometimes this feature doesn\'t work, we appreciate your understanding).</p>', isBig: false },
             { text: '<span style="font-size: 2.5rem; font-weight: 800; display: block; margin-bottom: 10px;">THANK YOU</span><span class="server-ip" onclick="copyIP(event)">international.mcsh.io</span>', isBig: false }
